@@ -28,6 +28,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  justify-content: center;
 }
 
 h1 {
@@ -65,4 +66,9 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.card{
+  border: 1px solid black;
+  border-radius: 20px;
 }
