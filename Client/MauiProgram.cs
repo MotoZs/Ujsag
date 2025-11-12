@@ -19,6 +19,8 @@ namespace Client
     		builder.Logging.AddDebug();
 #endif
 
+            //builder.Services.AddHttpClient();
+
             return builder.Build();
         }
     }

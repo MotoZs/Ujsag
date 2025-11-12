@@ -4,6 +4,8 @@
     {
         public App()
         {
+            Routing.RegisterRoute("details", typeof(DetailsPage));
+
             InitializeComponent();
         }
 

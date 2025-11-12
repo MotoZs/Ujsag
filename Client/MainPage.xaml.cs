@@ -1,24 +1,58 @@
-﻿namespace Client
+﻿using System.Collections.ObjectModel;
+using System.Net.Http.Json;
+
+namespace Client;
+
+public partial class MainPage : ContentPage
 {
-    public partial class MainPage : ContentPage
+    private readonly IHttpClientFactory httpClientFactory;
+    private ObservableCollection<ToDoDto> toDoCollection = [];
+
+    public MainPage(IHttpClientFactory httpClientFactory)
     {
-        int count = 0;
+        this.httpClientFactory = httpClientFactory;
 
-        public MainPage()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
 
-        private void OnCounterClicked(object? sender, EventArgs e)
-        {
-            count++;
+        ToDosView.ItemsSource = toDoCollection;
+    }
 
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
 
-            SemanticScreenReader.Announce(CounterBtn.Text);
-        }
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        var httpClient = httpClientFactory.CreateClient();
+        var toDos = await httpClient.GetFromJsonAsync<List<ToDoDto>>("https://localhost:7241/list");
+
+        toDoCollection.Clear();
+
+        foreach (var toDo in toDos)
+            toDoCollection.Add(toDo);
+    }
+
+    private async void OnAddNewClickedAsync(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("details");
+    }
+
+    private async void OnDeleteClickedAsync(object? sender, EventArgs e)
+    {
+        var toDo = (ToDoDto)((Button)sender).BindingContext;
+        var httpClient = httpClientFactory.CreateClient();
+        var toDos = await httpClient.DeleteAsync($"https://localhost:7241/delete/{toDo.Id}");
+
+        await LoadDataAsync();
+    }
+
+    private async void OnEditClickedAsync(object? sender, EventArgs e)
+    {
+        var toDo = (ToDoDto)((Button)sender).BindingContext;
+
+        await Shell.Current.GoToAsync("details", new ShellNavigationQueryParameters { { "Id", toDo.Id } });
     }
 }
