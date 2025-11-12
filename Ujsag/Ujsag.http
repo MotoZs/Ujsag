@@ -1,0 +1,6 @@
+@Ujsag_HostAddress = http://localhost:5038
+
+GET {{Ujsag_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
