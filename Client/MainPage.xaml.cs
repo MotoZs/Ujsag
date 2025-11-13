@@ -1,12 +1,23 @@
 ﻿using System.Collections.ObjectModel;
+using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace Client;
 
+// ArticleDto defined in MainPage for UI use
+public class ArticleDto
+{
+    public int Id { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public bool Expired { get; set; }
+}
+
 public partial class MainPage : ContentPage
 {
     private readonly IHttpClientFactory httpClientFactory;
-    private ObservableCollection<ToDoDto> toDoCollection = [];
+    private ObservableCollection<ArticleDto> articleCollection = new ObservableCollection<ArticleDto>();
+    private ObservableCollection<ArticleDto> publicArticleCollection = new ObservableCollection<ArticleDto>();
 
     public MainPage(IHttpClientFactory httpClientFactory)
     {
@@ -14,7 +25,8 @@ public partial class MainPage : ContentPage
 
         InitializeComponent();
 
-        ToDosView.ItemsSource = toDoCollection;
+        ArticlesView.ItemsSource = articleCollection;
+        PublicArticlesView.ItemsSource = publicArticleCollection;
     }
 
     protected override async void OnAppearing()
@@ -27,32 +39,59 @@ public partial class MainPage : ContentPage
     private async Task LoadDataAsync()
     {
         var httpClient = httpClientFactory.CreateClient();
-        var toDos = await httpClient.GetFromJsonAsync<List<ToDoDto>>("https://localhost:7241/list");
+        var articles = await httpClient.GetFromJsonAsync<List<ArticleDto>>("https://localhost:7241/list");
 
-        toDoCollection.Clear();
+        articleCollection.Clear();
+        publicArticleCollection.Clear();
 
-        foreach (var toDo in toDos)
-            toDoCollection.Add(toDo);
+        foreach (var article in articles)
+        {
+            articleCollection.Add(article);
+            publicArticleCollection.Add(article);
+        }
+    }
+
+    private async void OnLoginClickedAsync(object? sender, EventArgs e)
+    {
+        // Simplified admin check - teammates will implement real auth later
+        if (UsernameEntry.Text == "admin" && PasswordEntry.Text == "password")
+        {
+            AdminPanel.IsVisible = true;
+            LoginPanel.IsVisible = false;
+            MessageLabel.Text = string.Empty;
+        }
+        else
+        {
+            MessageLabel.Text = "Invalid credentials";
+        }
+    }
+
+    private void OnLogoutClickedAsync(object? sender, EventArgs e)
+    {
+        AdminPanel.IsVisible = false;
+        LoginPanel.IsVisible = true;
     }
 
     private async void OnAddNewClickedAsync(object? sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("details");
+        // Navigate to article page to create a new Article (admins only)
+        await Shell.Current.GoToAsync("article");
     }
 
     private async void OnDeleteClickedAsync(object? sender, EventArgs e)
     {
-        var toDo = (ToDoDto)((Button)sender).BindingContext;
+        var article = (ArticleDto)((Button)sender).BindingContext;
         var httpClient = httpClientFactory.CreateClient();
-        var toDos = await httpClient.DeleteAsync($"https://localhost:7241/delete/{toDo.Id}");
+        var response = await httpClient.DeleteAsync($"https://localhost:7241/delete/{article.Id}");
 
         await LoadDataAsync();
     }
 
     private async void OnEditClickedAsync(object? sender, EventArgs e)
     {
-        var toDo = (ToDoDto)((Button)sender).BindingContext;
+        var article = (ArticleDto)((Button)sender).BindingContext;
 
-        await Shell.Current.GoToAsync("details", new ShellNavigationQueryParameters { { "Id", toDo.Id } });
+        // Navigate to article page for editing Article
+        await Shell.Current.GoToAsync("article", new ShellNavigationQueryParameters { { "Id", article.Id } });
     }
 }

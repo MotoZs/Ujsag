@@ -5,7 +5,7 @@ namespace Client;
 public partial class DetailsPage : ContentPage, IQueryAttributable
 {
     private readonly IHttpClientFactory httpClientFactory;
-    private ToDoDto toDo;
+    private ArticleDto article;
     private int id;
 
     public DetailsPage(IHttpClientFactory httpClientFactory)
@@ -31,15 +31,15 @@ public partial class DetailsPage : ContentPage, IQueryAttributable
     {
         if (id == 0)
         {
-            toDo = new ToDoDto { Title = "Ez egy új todo" };
+            article = new ArticleDto { Title = "New Article" };
             return;
         }
         else
         {
             var httpClient = httpClientFactory.CreateClient();
-            toDo = await httpClient.GetFromJsonAsync<ToDoDto>($"https://localhost:7241/get/{id}");
+            article = await httpClient.GetFromJsonAsync<ArticleDto>($"https://localhost:7241/get/{id}");
         }
 
-        TodoId.Text = toDo.Id.ToString();
+        ArticleId.Text = article.Id.ToString();
     }
 }
