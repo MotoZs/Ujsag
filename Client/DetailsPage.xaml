@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Client.DetailsPage"
+             Title="Article Details">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="12">
+            <Label x:Name="ArticleTitle" FontSize="24" FontAttributes="Bold" />
+            <HorizontalStackLayout Spacing="10">
+                <Label x:Name="ArticleAuthor" FontAttributes="Italic" />
+                <Label Text="•" />
+                <Label x:Name="ArticlePublished" FontSize="Small" />
+            </HorizontalStackLayout>
+
+            <BoxView HeightRequest="1" BackgroundColor="#DDD" />
+
+            <Label x:Name="ArticleContent" LineBreakMode="WordWrap" />
+
+            <Button Text="Back" Clicked="OnBackClicked" HorizontalOptions="Start" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
