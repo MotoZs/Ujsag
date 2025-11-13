@@ -1,41 +1,77 @@
+
+using Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Services;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+
+builder.Services.AddOpenApiDocument(config =>
+{
+    config.AddSecurity("JWT", new NSwag.OpenApiSecurityScheme
+    {
+        Type = NSwag.OpenApiSecuritySchemeType.ApiKey,
+        Name = "Authorization",
+        In = NSwag.OpenApiSecurityApiKeyLocation.Header,
+        Description = "Type 'Bearer {your JWT token}' into the field below."
+    });
+
+    config.OperationProcessors.Add(new NSwag.Generation.Processors.Security.AspNetCoreOperationSecurityScopeProcessor("JWT"));
+});
+
+builder.Services.AddAuthorizationBuilder()
+  .AddPolicy("admin", policy => policy.RequireRole("Admin"))
+  .AddPolicy("user", policy => policy.RequireRole("User"));
+
+
+builder.Services.AddEndpointsApiExplorer();
+
+var connectionString = builder.Configuration.GetConnectionString("ToDoDbContext");
+builder.Services.AddDbContext<NewspaperDbContext>(options =>
+  options.UseSqlServer(connectionString));
+
+
+builder.Services.AddIdentityApiEndpoints<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<NewspaperDbContext>();
+
+
+builder.Services.AddTransient<INewsPaperService, NewsPaperService>();
+
+builder.Services.AddAuthorization();
+
+var allowSpecificOrigins = "_allowSpecificOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(allowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("*")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                      });
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseCors(allowSpecificOrigins);
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseOpenApi();
+    app.UseSwaggerUi();
 }
 
-app.UseHttpsRedirection();
+app.MapGroup("Account").WithTags("Account").MapIdentityApi<IdentityUser>();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+using var scope = app.Services.CreateScope();
+using var dbContext = scope.ServiceProvider.GetRequiredService<NewspaperDbContext>();
+var migrations = await dbContext.Database.GetPendingMigrationsAsync();
+if (migrations.Any())
+    await dbContext.Database.MigrateAsync();
 
 app.Run();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
