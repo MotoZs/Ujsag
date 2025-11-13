@@ -1,6 +1,6 @@
 ﻿namespace Services
 {
-    public class NewsPaperService
+    public class NewsPaperService: INewsPaperService
     {
 
     }

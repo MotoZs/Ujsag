@@ -28,7 +28,7 @@ builder.Services.AddAuthorizationBuilder()
 
 builder.Services.AddEndpointsApiExplorer();
 
-var connectionString = builder.Configuration.GetConnectionString("ToDoDbContext");
+var connectionString = builder.Configuration.GetConnectionString("NewspaperDbContext");
 builder.Services.AddDbContext<NewspaperDbContext>(options =>
   options.UseSqlServer(connectionString));
 
