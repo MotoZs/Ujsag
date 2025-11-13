@@ -31,8 +31,7 @@ public partial class DetailsPage : ContentPage, IQueryAttributable
     {
         if (id == 0)
         {
-            article = new ArticleDto { Title = "New Article" };
-            return;
+            article = new ArticleDto { Title = "New Article", Author = "", Content = "", Description = "" };
         }
         else
         {
@@ -40,6 +39,14 @@ public partial class DetailsPage : ContentPage, IQueryAttributable
             article = await httpClient.GetFromJsonAsync<ArticleDto>($"https://localhost:7241/get/{id}");
         }
 
-        ArticleId.Text = article.Id.ToString();
+        ArticleTitle.Text = article.Title;
+        ArticleAuthor.Text = article.Author;
+        ArticlePublished.Text = article.Published.ToString("yyyy-MM-dd");
+        ArticleContent.Text = article.Content;
+    }
+
+    private async void OnBackClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
     }
 }
