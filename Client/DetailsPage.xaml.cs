@@ -42,6 +42,7 @@ public partial class DetailsPage : ContentPage, IQueryAttributable
 
         ArticleTitle.Text = article.Title;
         ArticleAuthor.Text = article.Author;
+        ArticleAuthorId.Number = article.AuthorId;
         ArticlePublished.Text = article.CreatedDate.ToString("yyyy-MM-dd");
         ArticleContent.Text = article.Description;
     }
