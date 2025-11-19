@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import type { Szerzo } from "../types/Szerzo";
-import type { Cikk } from "../types/Cikk";
 import { toast } from "react-toastify";
 import apiClient from "../api/apiClient";
 
@@ -10,7 +9,7 @@ const Fooldal = () => {
   useEffect(() => {
     apiClient
       .get("/get")
-      .then((Response) => setSzerzok(Response.data))
+      .then((response) => setSzerzok(response.data))
       .catch(() => toast.error("A szerzők belöltése sikertelen!"));
   }, []);
 

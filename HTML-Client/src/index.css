@@ -71,4 +71,9 @@ button:focus-visible {
 .card{
   border: 1px solid black;
   border-radius: 20px;
+  background-color: #3bb2cf;
+}
+
+.card:hover{
+  background-color: #5855e9;
 }
