@@ -3,6 +3,7 @@ using Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Services;
+using System.Security.Principal;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -65,8 +66,6 @@ if (app.Environment.IsDevelopment())
 }
 
 
-
-
 app.MapGroup("Account").WithTags("Account").MapIdentityApi<IdentityUser>();
 
 // ========================================
@@ -94,19 +93,22 @@ articlesGroup.MapGet("/{id}", async (int id, INewsPaperService service) =>
 .WithOpenApi();
 
 // POST: api/articles - Admin only
-articlesGroup.MapPost("/", async (CreateArticleDto dto, INewsPaperService service) =>
+articlesGroup.MapPost("/", async (Article article, INewsPaperService service) =>
 {
-    var article = await service.CreateArticleAsync(dto);
-    return Results.Created($"/api/articles/{article.Id}", article);
+    var created = await service.CreateArticleAsync(article);
+    return Results.Created($"/api/articles/{created.Id}", created);
 })
 .RequireAuthorization("admin")
 .WithName("CreateArticle")
 .WithOpenApi();
 
 // PUT: api/articles/{id} - Admin only
-articlesGroup.MapPut("/{id}", async (int id, UpdateArticleDto dto, INewsPaperService service) =>
+articlesGroup.MapPut("/{id}", async (int id, Article article, INewsPaperService service) =>
 {
-    var result = await service.UpdateArticleAsync(id, dto);
+    if (id != article.Id)
+        return Results.BadRequest(new { message = "ID mismatch" });
+
+    var result = await service.UpdateArticleAsync(article);
     return result ? Results.NoContent() : Results.NotFound(new { message = "Article not found" });
 })
 .RequireAuthorization("admin")
@@ -148,18 +150,14 @@ authorsGroup.MapGet("/{id}", async (int id, INewsPaperService service) =>
 .WithOpenApi();
 
 // POST: api/authors - Admin only
-authorsGroup.MapPost("/", async (CreateAuthorDto dto, INewsPaperService service) =>
+authorsGroup.MapPost("/", async (Author author, INewsPaperService service) =>
 {
-    var author = await service.CreateAuthorAsync(dto);
-    return Results.Created($"/api/authors/{author.Id}", author);
+    var created = await service.CreateAuthorAsync(author);
+    return Results.Created($"/api/authors/{created.Id}", created);
 })
 .RequireAuthorization("admin")
 .WithName("CreateAuthor")
 .WithOpenApi();
-
-// ========================================
-// DATABASE MIGRATION
-// ========================================
 
 using var scope = app.Services.CreateScope();
 using var dbContext = scope.ServiceProvider.GetRequiredService<NewspaperDbContext>();
