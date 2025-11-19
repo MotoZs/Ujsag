@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Client"
+             xmlns:common="clr-namespace:Common;assembly=Common"
              x:Class="Client.MainPage">
 
     <ScrollView>
@@ -43,7 +44,7 @@
 
                 <CollectionView x:Name="ArticlesView" SelectionMode="None">
                     <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="local:ArticleDto">
+                        <DataTemplate x:DataType="common:ArticleDto">
                             <Frame CornerRadius="6" Padding="10" Margin="0,6" HasShadow="True" BackgroundColor="White">
                                 <VerticalStackLayout Spacing="6">
                                     <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" TextColor="#111" />
@@ -70,7 +71,7 @@
                 <Label Text="Recent Articles" FontAttributes="Bold" FontSize="18" />
                 <CollectionView x:Name="PublicArticlesView" SelectionMode="Single">
                     <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="local:ArticleDto">
+                        <DataTemplate x:DataType="common:ArticleDto">
                             <Frame CornerRadius="4" Padding="8" Margin="0,6" BackgroundColor="#FFF">
                                 <VerticalStackLayout>
                                     <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="16" />

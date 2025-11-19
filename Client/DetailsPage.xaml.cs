@@ -32,7 +32,7 @@ public partial class DetailsPage : ContentPage, IQueryAttributable
     {
         if (id == 0)
         {
-            article = new ArticleDto { Title = "New Article", Description = "", AuthorId = 0, Author = AuthorDto, CreatedDate = DateTime };
+            article = new ArticleDto { Title = "New Article", Description = "", AuthorId = 0, CreatedDate = DateTime.Now };
         }
         else
         {

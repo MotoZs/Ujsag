@@ -132,7 +132,7 @@ articlesGroup.MapDelete("/{id}", async (int id, INewsPaperService service) =>
 var authorsGroup = app.MapGroup("api/authors").WithTags("Authors");
 
 // GET: api/authors - Public access
-authorsGroup.MapGet("/", async (INewsPaperService service) =>
+authorsGroup.MapGet("/listauthors", async (INewsPaperService service) =>
 {
     var authors = await service.GetAllAuthorsAsync();
     return Results.Ok(authors);
