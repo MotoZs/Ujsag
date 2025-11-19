@@ -15,5 +15,7 @@ namespace Data
         public int AuthorId { get; set; }
 
         public Author Author { get; set; }
+
+        public DateTime CreatedDate { get; set; }
     }
 }
