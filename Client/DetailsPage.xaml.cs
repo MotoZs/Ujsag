@@ -32,7 +32,7 @@ public partial class DetailsPage : ContentPage, IQueryAttributable
     {
         if (id == 0)
         {
-            article = new ArticleDto { Title = "New Article", Author = "", Content = "", Description = "" };
+            article = new ArticleDto { Title = "New Article", Description = "", AuthorId = 0, Author = AuthorDto, CreatedDate = DateTime };
         }
         else
         {
@@ -42,8 +42,8 @@ public partial class DetailsPage : ContentPage, IQueryAttributable
 
         ArticleTitle.Text = article.Title;
         ArticleAuthor.Text = article.Author;
-        ArticlePublished.Text = article.Published.ToString("yyyy-MM-dd");
-        ArticleContent.Text = article.Content;
+        ArticlePublished.Text = article.CreatedDate.ToString("yyyy-MM-dd");
+        ArticleContent.Text = article.Description;
     }
 
     private async void OnBackClicked(object sender, EventArgs e)
