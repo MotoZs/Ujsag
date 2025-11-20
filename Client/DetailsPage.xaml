@@ -8,7 +8,6 @@
         <VerticalStackLayout Padding="20" Spacing="12">
             <Label x:Name="ArticleTitle" FontSize="24" FontAttributes="Bold" />
             <HorizontalStackLayout Spacing="10">
-                <Label x:Name="ArticleAuthor" FontAttributes="Italic" />
                 <Label Text="•" />
                 <Label x:Name="ArticleCreateDate" FontSize="Small" />
             </HorizontalStackLayout>

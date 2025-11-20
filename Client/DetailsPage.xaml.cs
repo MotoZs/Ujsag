@@ -31,21 +31,16 @@ public partial class DetailsPage : ContentPage, IQueryAttributable
 
     private async ValueTask LoadDataAsync()
     {
-        if (id == 0)
-        {
-            article = new ArticleDto { Title = "New Article", Description = "", AuthorId = 0, CreatedDate = DateTime.Now };
-        }
-        else
+        if (id != 0)
         {
             var httpClient = httpClientFactory.CreateClient();
             article = await httpClient.GetFromJsonAsync<ArticleDto>($"{BACKEND_URL}/get/{id}");
         }
 
-        ArticleTitle.Text = article.Title;
-        ArticleAuthor.Text = article.Author.Name;
-        ArticleAuthorId.Text = article.Author.Id.ToString();
-        ArticleCreateDate.Text = article.CreatedDate.ToString("yyyy-MM-dd");
-        ArticleContent.Text = article.Description;
+        ArticleTitle.Text = article?.Title;
+        ArticleAuthorId.Text = article?.Author?.Id.ToString() ?? "add meg az Id-t";
+        ArticleCreateDate.Text = article?.CreatedDate.ToString("yyyy-MM-dd") ?? "1999-09-09";
+        ArticleContent.Text = article?.Description ?? "description";
     }
 
     private async void OnBackClicked(object sender, EventArgs e)
