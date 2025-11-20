@@ -131,14 +131,15 @@ articlesGroup.MapDelete("/{id}", async (int id, INewsPaperService service) =>
 
 var authorsGroup = app.MapGroup("api/authors").WithTags("Authors");
 
-// GET: api/authors - Public access
-authorsGroup.MapGet("/api/authors/listauthors", async (INewsPaperService service) =>
+// GET: api/authors/listauthors
+authorsGroup.MapGet("/listauthors", async (INewsPaperService service) =>
 {
     var authors = await service.GetAllAuthorsAsync();
     return Results.Ok(authors);
 })
 .WithName("GetAllAuthors")
 .WithOpenApi();
+
 
 // GET: api/authors/{id} - Public access
 authorsGroup.MapGet("/{id}", async (int id, INewsPaperService service) =>
