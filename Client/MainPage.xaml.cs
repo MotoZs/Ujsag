@@ -8,6 +8,8 @@ namespace Client;
 
 public partial class MainPage : ContentPage
 {
+    public string BACKEND_URL = "https://localhost:7072/api";
+
     private readonly IHttpClientFactory httpClientFactory;
     private ObservableCollection<ArticleDto> articleCollection = new ObservableCollection<ArticleDto>();
     private ObservableCollection<ArticleDto> publicArticleCollection = new ObservableCollection<ArticleDto>();
@@ -32,7 +34,7 @@ public partial class MainPage : ContentPage
     private async Task LoadDataAsync()
     {
         var httpClient = httpClientFactory.CreateClient();
-        var articles = await httpClient.GetFromJsonAsync<List<ArticleDto>>("https://localhost:7241/list");
+        var articles = await httpClient.GetFromJsonAsync<List<ArticleDto>>($"{BACKEND_URL}/articles");
 
         articleCollection.Clear();
         publicArticleCollection.Clear();
@@ -75,7 +77,7 @@ public partial class MainPage : ContentPage
     {
         var article = (ArticleDto)((Button)sender).BindingContext;
         var httpClient = httpClientFactory.CreateClient();
-        var response = await httpClient.DeleteAsync($"https://localhost:7241/delete/{article.Id}");
+        var response = await httpClient.DeleteAsync($"{BACKEND_URL}/delete/{article.Id}");
 
         await LoadDataAsync();
     }

@@ -1,6 +1,6 @@
 @Ujsag_HostAddress = http://localhost:5038
 
-GET {{Ujsag_HostAddress}}/listauthors
+GET {{Ujsag_HostAddress}}/api/authors/listauthors
 Accept: application/json
 
 ###

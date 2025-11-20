@@ -5,6 +5,7 @@ namespace Client;
 
 public partial class DetailsPage : ContentPage, IQueryAttributable
 {
+    public string BACKEND_URL = "https://localhost:7072/api";
     private readonly IHttpClientFactory httpClientFactory;
     private ArticleDto article;
     private int id;
@@ -37,13 +38,13 @@ public partial class DetailsPage : ContentPage, IQueryAttributable
         else
         {
             var httpClient = httpClientFactory.CreateClient();
-            article = await httpClient.GetFromJsonAsync<ArticleDto>($"https://localhost:7241/get/{id}");
+            article = await httpClient.GetFromJsonAsync<ArticleDto>($"{BACKEND_URL}/get/{id}");
         }
 
         ArticleTitle.Text = article.Title;
-        ArticleAuthor.Text = article.Author;
-        ArticleAuthorId.Number = article.AuthorId;
-        ArticlePublished.Text = article.CreatedDate.ToString("yyyy-MM-dd");
+        ArticleAuthor.Text = article.Author.Name;
+        ArticleAuthorId.Text = article.Author.Id.ToString();
+        ArticleCreateDate.Text = article.CreatedDate.ToString("yyyy-MM-dd");
         ArticleContent.Text = article.Description;
     }
 
