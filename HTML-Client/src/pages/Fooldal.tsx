@@ -8,7 +8,7 @@ const Fooldal = () => {
 
   useEffect(() => {
     apiClient
-      .get("/get")
+      .get("/api/authors/listauthors")
       .then((response) => setSzerzok(response.data))
       .catch(() => toast.error("A szerzők belöltése sikertelen!"));
   }, []);
