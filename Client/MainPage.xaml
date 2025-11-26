@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Client"
+             xmlns:common="clr-namespace:Common;assembly=Common"
+             x:Class="Client.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="18">
+
+            <!-- App header -->
+            <Label Text="Daily Gazette - Admin"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="#222" />
+
+            <!-- Login panel for admins -->
+            <Frame x:Name="LoginPanel" Padding="12" CornerRadius="8" BackgroundColor="#FFF8E1" HasShadow="True">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Admin Login" FontAttributes="Bold" />
+                    <Entry x:Name="UsernameEntry" Placeholder="Username" />
+                    <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" />
+                    <HorizontalStackLayout Spacing="10">
+                        <Button Text="Login" Clicked="OnLoginClickedAsync" />
+                        <Button Text="Logout" Clicked="OnLogoutClickedAsync" />
+                    </HorizontalStackLayout>
+                    <Label x:Name="MessageLabel" TextColor="Red" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Admin panel: new article + list. Hidden until login succeeds -->
+            <VerticalStackLayout x:Name="AdminPanel" IsVisible="False" Spacing="12">
+                <Button
+                    x:Name="AddNew"
+                    Text="+ New Article"
+                    Clicked="OnAddNewClickedAsync"
+                    HorizontalOptions="Start"
+                    BackgroundColor="#333"
+                    TextColor="White"
+                    Padding="10" />
+
+                <!-- Article editor (shown when creating a new article) -->
+                <Frame x:Name="ArticleEditorPanel" IsVisible="False" Padding="10" CornerRadius="6" BackgroundColor="#FFFFFF" HasShadow="True">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Article editor" FontAttributes="Bold" FontSize="16" />
+                        <Entry x:Name="AdminTitleEntry" Placeholder="Title" />
+                        <Entry x:Name="AdminAuthorEntry" Placeholder="Author" />
+                        <DatePicker x:Name="AdminPublishedPicker" />
+                        <Entry x:Name="AdminDescriptionEntry" Placeholder="Short description" />
+                        <Editor x:Name="AdminContentEditor" HeightRequest="120" Placeholder="Full content (optional)" />
+                        <HorizontalStackLayout Spacing="10" HorizontalOptions="End">
+                            <Button Text="Save" Clicked="OnSaveArticleClicked" BackgroundColor="#4CAF50" TextColor="White" />
+                            <Button Text="Back" Clicked="OnBackFromEditorClicked" BackgroundColor="#9E9E9E" TextColor="White" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <CollectionView x:Name="ArticlesView" SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="common:ArticleDto">
+                            <Frame CornerRadius="6" Padding="10" Margin="0,6" HasShadow="True" BackgroundColor="White">
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" TextColor="#111" />
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="{Binding Author.Name}" FontAttributes="Italic" FontSize="12" TextColor="#666" />
+                                        <Label Text="•" FontSize="12" TextColor="#888" />
+                                        <Label Text="{Binding CreatedDate, StringFormat='{}{0:yyyy-MM-dd}'}" FontSize="12" TextColor="#888" />
+                                    </HorizontalStackLayout>
+                                    <Label Text="{Binding Description}" LineBreakMode="TailTruncation" FontSize="14" TextColor="#333" />
+
+                                    <HorizontalStackLayout Spacing="8" HorizontalOptions="End">
+                                        <Button Text="Edit" Clicked="OnEditClickedAsync" BackgroundColor="#4A90E2" TextColor="White" />
+                                        <Button Text="Delete" Clicked="OnDeleteClickedAsync" BackgroundColor="#E24A4A" TextColor="White" />
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- Read-only section: anyone can view recent articles -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Recent Articles" FontAttributes="Bold" FontSize="18" />
+                <CollectionView x:Name="PublicArticlesView" SelectionMode="Single">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="common:ArticleDto">
+                            <Frame CornerRadius="4" Padding="8" Margin="0,6" BackgroundColor="#FFF">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="16" />
+                                    <Label Text="{Binding Description}" LineBreakMode="TailTruncation" FontSize="14" TextColor="#444" />
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

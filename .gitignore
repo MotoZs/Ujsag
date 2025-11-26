@@ -3,9 +3,11 @@ Data/obj
 Ujsag/obj
 Services/obj
 Ujsag/bin
-Client/obj
 Data/bin
-Client/bin
-Common/bin
-Common/obj
 Services/bin
+Client/obj
+Ujsag/bin
+Data/bin
+Common/obj
+Common/bin
+Client/bin

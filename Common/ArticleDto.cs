@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Data;
 
-namespace Data
+namespace Common
 {
-    public class Article
+    public record ArticleDto ()
     {
-
         public int Id { get; set; }
 
         public string Title { get; set; }
@@ -14,7 +12,7 @@ namespace Data
 
         public int AuthorId { get; set; }
 
-        public Author Author { get; set; }
+        public AuthorDto Author { get; set; }
 
         public DateTime CreatedDate { get; set; }
     }

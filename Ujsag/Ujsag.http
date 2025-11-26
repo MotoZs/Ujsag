@@ -1,6 +1,120 @@
 @Ujsag_HostAddress = http://localhost:5038
 
-GET {{Ujsag_HostAddress}}/weatherforecast/
+GET {{Ujsag_HostAddress}}/api/authors/listauthors
 Accept: application/json
 
 ###
+
+### Register New User
+POST {{Ujsag_HostAddress}}/Account/register
+Content-Type: application/json
+
+{
+  "email": "user@newspaper.com",
+  "password": "User123!"
+}
+
+### Login as Admin
+# @name adminLogin
+POST {{Ujsag_HostAddress}}/Account/login
+Content-Type: application/json
+
+{
+  "email": "admin@newspaper.com",
+  "password": "Admin123!"
+}
+
+### Login as Regular User
+POST {{Ujsag_HostAddress}}/Account/login
+Content-Type: application/json
+
+{
+  "email": "user@newspaper.com",
+  "password": "User123!"
+}
+
+### Get All Authors (Public)
+GET {{Ujsag_HostAddress}}/api/authors/listauthors
+
+### Get Author By ID (Public)
+GET {{Ujsag_HostAddress}}/api/authors/1
+
+### Create Author (Admin Only)
+POST {{Ujsag_HostAddress}}/api/authors
+Content-Type: application/json
+Authorization: Bearer CfDJ8MWGqu4SaMNCqI1DMxJJL4vtcCMwMlvGfBAskn049-xZgzH5xWuLDPIFXYuuVdaqW2iOBLggU-cB2LKwyrJe1seTreOBKSqKSKa-hPDmFxQR-o7-LmIeyqJOwB5jtaLdgqBXiJRoLFDdy2ayMgo4sxsXopK8h1cJrsxPPZrPD1yaa43cf3JX32Wxw-lwFju4WOEMQnMtpyxNgChwbill3khQe1G6_6CMK2yj3qWjVXXKr5PG47m8fBXu_GtrYTw7nnq721aGTpUJlIAgQRR7A188hCX6EqhdZQG-jTH4AyUzcYAfjgghSMNX6YcAcrIHI5fMA1bX_akD7QUawCb1XMEW7i-iSuHSRXMwmrV7AI01Jb_oVYhMtomsE2Y8OW939VQkDHTtlanT5sFVq2yi0DKRO90M4-ocK4OqS2l3onaX2K9cIrT3raOrFzNdj72kWRbuHktvICJhHjAxwOesdCf8JkJYoY5LX1o0RcW6czbu8zOzTYkwqbOpl3NT4Qg2TTWtBjzs-SPN4C87fDiU2MURjt3FcllxlCl2DUvaVeId8atx0zhyiz0KSx5AigyLhlmypcbh8LccZPTGs0lDgzdW9aQBL_IL_gwKD7sWI7DGmv0QDMSFnFZ-LiywBQZynDYlmC2YMxfkpGRwL_rwOMjq940iDNltPTVgOOx6rbmHxtynxdQqXgQisxcAnUdBebyW06hPkQ5_4vaMIJWmOrw2vEfxrETbg3NKBV2bOGpjuVSbtFxQc41hJ9cS6TnhhFF1ZvyoQPBFqcMR_weQl5fF-Ns5r9TqvkX8NuOJOZp4
+
+{
+  "name": "John Doe",
+}
+
+### Create Another Author
+# @name createAuthor
+POST {{Ujsag_HostAddress}}/api/authors
+Content-Type: application/json
+Authorization: Bearer CfDJ8MWGqu4SaMNCqI1DMxJJL4vtcCMwMlvGfBAskn049-xZgzH5xWuLDPIFXYuuVdaqW2iOBLggU-cB2LKwyrJe1seTreOBKSqKSKa-hPDmFxQR-o7-LmIeyqJOwB5jtaLdgqBXiJRoLFDdy2ayMgo4sxsXopK8h1cJrsxPPZrPD1yaa43cf3JX32Wxw-lwFju4WOEMQnMtpyxNgChwbill3khQe1G6_6CMK2yj3qWjVXXKr5PG47m8fBXu_GtrYTw7nnq721aGTpUJlIAgQRR7A188hCX6EqhdZQG-jTH4AyUzcYAfjgghSMNX6YcAcrIHI5fMA1bX_akD7QUawCb1XMEW7i-iSuHSRXMwmrV7AI01Jb_oVYhMtomsE2Y8OW939VQkDHTtlanT5sFVq2yi0DKRO90M4-ocK4OqS2l3onaX2K9cIrT3raOrFzNdj72kWRbuHktvICJhHjAxwOesdCf8JkJYoY5LX1o0RcW6czbu8zOzTYkwqbOpl3NT4Qg2TTWtBjzs-SPN4C87fDiU2MURjt3FcllxlCl2DUvaVeId8atx0zhyiz0KSx5AigyLhlmypcbh8LccZPTGs0lDgzdW9aQBL_IL_gwKD7sWI7DGmv0QDMSFnFZ-LiywBQZynDYlmC2YMxfkpGRwL_rwOMjq940iDNltPTVgOOx6rbmHxtynxdQqXgQisxcAnUdBebyW06hPkQ5_4vaMIJWmOrw2vEfxrETbg3NKBV2bOGpjuVSbtFxQc41hJ9cS6TnhhFF1ZvyoQPBFqcMR_weQl5fF-Ns5r9TqvkX8NuOJOZp4
+
+{
+  "name": "Jane Smith",
+}
+
+### Get All Articles (Public)
+GET {{Ujsag_HostAddress}}/api/articles
+
+### Get Article By ID (Public)
+GET {{Ujsag_HostAddress}}/api/articles/1
+
+### Create Article (Admin Only)
+# @name createArticle
+POST {{Ujsag_HostAddress}}/api/articles
+Content-Type: application/json
+Authorization: Bearer CfDJ8MWGqu4SaMNCqI1DMxJJL4vtcCMwMlvGfBAskn049-xZgzH5xWuLDPIFXYuuVdaqW2iOBLggU-cB2LKwyrJe1seTreOBKSqKSKa-hPDmFxQR-o7-LmIeyqJOwB5jtaLdgqBXiJRoLFDdy2ayMgo4sxsXopK8h1cJrsxPPZrPD1yaa43cf3JX32Wxw-lwFju4WOEMQnMtpyxNgChwbill3khQe1G6_6CMK2yj3qWjVXXKr5PG47m8fBXu_GtrYTw7nnq721aGTpUJlIAgQRR7A188hCX6EqhdZQG-jTH4AyUzcYAfjgghSMNX6YcAcrIHI5fMA1bX_akD7QUawCb1XMEW7i-iSuHSRXMwmrV7AI01Jb_oVYhMtomsE2Y8OW939VQkDHTtlanT5sFVq2yi0DKRO90M4-ocK4OqS2l3onaX2K9cIrT3raOrFzNdj72kWRbuHktvICJhHjAxwOesdCf8JkJYoY5LX1o0RcW6czbu8zOzTYkwqbOpl3NT4Qg2TTWtBjzs-SPN4C87fDiU2MURjt3FcllxlCl2DUvaVeId8atx0zhyiz0KSx5AigyLhlmypcbh8LccZPTGs0lDgzdW9aQBL_IL_gwKD7sWI7DGmv0QDMSFnFZ-LiywBQZynDYlmC2YMxfkpGRwL_rwOMjq940iDNltPTVgOOx6rbmHxtynxdQqXgQisxcAnUdBebyW06hPkQ5_4vaMIJWmOrw2vEfxrETbg3NKBV2bOGpjuVSbtFxQc41hJ9cS6TnhhFF1ZvyoQPBFqcMR_weQl5fF-Ns5r9TqvkX8NuOJOZp4
+
+{
+  "title": "Breaking News: Technology Advances",
+  "description": "In a groundbreaking development, scientists have made significant progress in artificial intelligence research. This breakthrough could revolutionize how we interact with technology in our daily lives.",
+  "authorid": 1,
+  "createddate": "2025-02-23"
+}
+
+### Create Another Article
+POST {{Ujsag_HostAddress}}/api/articles
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+
+{
+  "title": "Local Community Celebrates Annual Festival",
+  "description": "The annual community festival brought together thousands of residents this weekend. The event featured local musicians, food vendors, and activities for families.",
+  "createddate": "2024-11-25",
+  "authorid": 1,
+}
+
+### Create Sports Article
+POST {{Ujsag_HostAddress}}/api/articles
+Content-Type: application/json
+Authorization: Bearer "CfDJ8O_8NKnprmJFnjL3O-HDaru1Jpgoz5rFMTQ951wnX6B4HHjfBvOQfMTV3ULBNf9keMcuVRfrwadyDMXyNwiIrw4kUuINxHJMKHcTZ9sqOS5z9Xd85W0HSN2710lukJMXa1g4h9k960CdaGPXi0uN_7ODPF79D14mAnoJQt9pKvRuObxFhR_kzyDoDPrt4sszlCDQmCP2qfImpdGhQWpHWBRot3ZRe9QfJz7-1Os0Q-UesLns9s8Q4znRG8xw6pDRuW5xo3AyCI4KP2461JORlkf7YpqN7eSBtllgOvuAsMtnUPn5YsB9ErLf-88oDYMOl-ies_KBjkOAN8EIDLul8Yu8nF5xGKNCSrRprNj9f8Gx0XiI0FyvUrLfn3U4m8X8ThL_rL1jUPcOjGjZHJxe7l0vglwU7JR3MFNMp7fQ5uXjKT_QqoEF7tQxCLrYNttc8tEhmo-Bb0VmFneq9_9RxWRaljMYUtomt95nsz2Yb0vahSFhgSRuKZ_49udv_dKnoj7AeVxkoJAFNwxTpL3Lr9IBXQIQjxTXnXqJggUId7VzfmJYtVxk2p-2b7WkHFtgr9YS_EHrmjlS87r8b8VnPXgh6hsV-FntnLY095GUZRF4M26FpI07lpX0gb4yFo6iQjlhk5YeXbqvis2t8fuXGuDBdCR6y9E7OW0Rb2FxtC1sbK8UshBOc36GJ4WNcs8WDEp4hJjmZgFugxQvh4mO81UZfRzb2oAi5o5FakNF9DHTEC9C6MZaA_HTIa4Axu9dNL4N6bvwBInfnXGdWG9Co47DHIlTueKRZKPB_wodk1Hj",
+
+{
+  "title": "Championship Finals: Thrilling Victory",
+  "description": "In an exciting match that went into overtime, the home team secured victory in the championship finals. Fans celebrated throughout the night as the team claimed their first title in a decade.",
+  "createddate": "2024-11-24",
+  "authorid": 2,
+ 
+}
+
+### Update Article (Admin Only)
+PUT {{Ujsag_HostAddress}}/api/articles/1
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+
+{
+  "id": 1,
+  "title": "Breaking News: Major Technology Breakthrough",
+  "content": "In a groundbreaking development, scientists have made significant progress in artificial intelligence research. This breakthrough could revolutionize how we interact with technology in our daily lives. Updated with more details.",
+  "createddate": "2024-11-26",
+  "authorid": 1,
+}
+
+### Delete Article (Admin Only)
+DELETE {{Ujsag_HostAddress}}/api/articles/3
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
