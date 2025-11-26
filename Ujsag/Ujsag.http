@@ -46,8 +46,6 @@ Authorization: Bearer CfDJ8MWGqu4SaMNCqI1DMxJJL4vtcCMwMlvGfBAskn049-xZgzH5xWuLDP
 
 {
   "name": "John Doe",
-  "email": "john.doe@newspaper.com",
-  "bio": "Experienced journalist with 10 years in investigative reporting"
 }
 
 ### Create Another Author
@@ -87,9 +85,8 @@ Authorization: Bearer {{adminLogin.response.body.accessToken}}
 {
   "title": "Local Community Celebrates Annual Festival",
   "description": "The annual community festival brought together thousands of residents this weekend. The event featured local musicians, food vendors, and activities for families.",
-  "publishedDate": "2024-11-25T14:30:00Z",
-  "authorId": 1,
-  "category": "Local News"
+  "createddate": "2024-11-25",
+  "authorid": 1,
 }
 
 ### Create Sports Article
@@ -100,8 +97,8 @@ Authorization: Bearer "CfDJ8O_8NKnprmJFnjL3O-HDaru1Jpgoz5rFMTQ951wnX6B4HHjfBvOQf
 {
   "title": "Championship Finals: Thrilling Victory",
   "description": "In an exciting match that went into overtime, the home team secured victory in the championship finals. Fans celebrated throughout the night as the team claimed their first title in a decade.",
-  "publishedDate": "2024-11-24T20:00:00Z",
-  "authorId": 2,
+  "createddate": "2024-11-24",
+  "authorid": 2,
  
 }
 
@@ -114,9 +111,8 @@ Authorization: Bearer {{adminLogin.response.body.accessToken}}
   "id": 1,
   "title": "Breaking News: Major Technology Breakthrough",
   "content": "In a groundbreaking development, scientists have made significant progress in artificial intelligence research. This breakthrough could revolutionize how we interact with technology in our daily lives. Updated with more details.",
-  "publishedDate": "2024-11-26T10:00:00Z",
-  "authorId": 1,
-  "category": "Technology"
+  "createddate": "2024-11-26",
+  "authorid": 1,
 }
 
 ### Delete Article (Admin Only)
