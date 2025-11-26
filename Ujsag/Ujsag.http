@@ -4,3 +4,124 @@ GET {{Ujsag_HostAddress}}/api/authors/listauthors
 Accept: application/json
 
 ###
+
+### Register New User
+POST {{baseUrl}}/Account/register
+Content-Type: application/json
+
+{
+  "email": "user@newspaper.com",
+  "password": "User123!"
+}
+
+### Login as Admin
+# @name adminLogin
+POST {{baseUrl}}/Account/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}"
+}
+
+### Login as Regular User
+POST {{baseUrl}}/Account/login
+Content-Type: application/json
+
+{
+  "email": "user@newspaper.com",
+  "password": "User123!"
+}
+
+### Get All Authors (Public)
+GET {{baseUrl}}/api/authors/listauthors
+
+### Get Author By ID (Public)
+GET {{baseUrl}}/api/authors/1
+
+### Create Author (Admin Only)
+POST {{baseUrl}}/api/authors
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+
+{
+  "name": "John Doe",
+  "email": "john.doe@newspaper.com",
+  "bio": "Experienced journalist with 10 years in investigative reporting"
+}
+
+### Create Another Author
+# @name createAuthor
+POST {{baseUrl}}/api/authors
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+
+{
+  "name": "Jane Smith",
+  "email": "jane.smith@newspaper.com",
+  "bio": "Political correspondent and editor"
+}
+
+### Get All Articles (Public)
+GET {{baseUrl}}/api/articles
+
+### Get Article By ID (Public)
+GET {{baseUrl}}/api/articles/1
+
+### Create Article (Admin Only)
+# @name createArticle
+POST {{baseUrl}}/api/articles
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+
+{
+  "title": "Breaking News: Technology Advances",
+  "content": "In a groundbreaking development, scientists have made significant progress in artificial intelligence research. This breakthrough could revolutionize how we interact with technology in our daily lives.",
+  "publishedDate": "2024-11-26T10:00:00Z",
+  "authorId": 1,
+  "category": "Technology"
+}
+
+### Create Another Article
+POST {{baseUrl}}/api/articles
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+
+{
+  "title": "Local Community Celebrates Annual Festival",
+  "content": "The annual community festival brought together thousands of residents this weekend. The event featured local musicians, food vendors, and activities for families.",
+  "publishedDate": "2024-11-25T14:30:00Z",
+  "authorId": 1,
+  "category": "Local News"
+}
+
+### Create Sports Article
+POST {{baseUrl}}/api/articles
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+
+{
+  "title": "Championship Finals: Thrilling Victory",
+  "content": "In an exciting match that went into overtime, the home team secured victory in the championship finals. Fans celebrated throughout the night as the team claimed their first title in a decade.",
+  "publishedDate": "2024-11-24T20:00:00Z",
+  "authorId": 2,
+  "category": "Sports"
+}
+
+### Update Article (Admin Only)
+PUT {{baseUrl}}/api/articles/1
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+
+{
+  "id": 1,
+  "title": "Breaking News: Major Technology Breakthrough",
+  "content": "In a groundbreaking development, scientists have made significant progress in artificial intelligence research. This breakthrough could revolutionize how we interact with technology in our daily lives. Updated with more details.",
+  "publishedDate": "2024-11-26T10:00:00Z",
+  "authorId": 1,
+  "category": "Technology"
+}
+
+### Delete Article (Admin Only)
+DELETE {{baseUrl}}/api/articles/3
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
