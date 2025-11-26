@@ -135,7 +135,7 @@ var authorsGroup = app.MapGroup("api/authors").WithTags("Authors");
 authorsGroup.MapGet("/listauthors", async (INewsPaperService service) =>
 {
     var authors = await service.GetAllAuthorsAsync();
-    return Results.Ok(authors);
+    return Results.Ok();
 })
 .WithName("GetAllAuthors")
 .WithOpenApi();
