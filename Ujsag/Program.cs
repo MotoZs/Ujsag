@@ -96,7 +96,7 @@ articlesGroup.MapGet("/{id}", async (int id, INewsPaperService service) =>
 articlesGroup.MapPost("/", async (Article article, INewsPaperService service) =>
 {
     var created = await service.CreateArticleAsync(article);
-    return Results.Created($"/api/articles/{created.Id}", created);
+    return Results.Created();
 })
 .RequireAuthorization("admin")
 .WithName("CreateArticle")
