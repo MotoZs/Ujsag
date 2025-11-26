@@ -16,7 +16,6 @@ public class NewsPaperService : INewsPaperService
     public async Task<IEnumerable<Article>> GetAllArticlesAsync()
     {
         return await _context.Articles
-            .Include(a => a.Author)
             .ToListAsync();
     }
 
@@ -63,7 +62,6 @@ public class NewsPaperService : INewsPaperService
     public async Task<IEnumerable<Author>> GetAllAuthorsAsync()
     {
         return await _context.Authors
-            .Include(a => a.Articles)
             .ToListAsync();
     }
 
