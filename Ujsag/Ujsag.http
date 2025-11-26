@@ -6,7 +6,7 @@ Accept: application/json
 ###
 
 ### Register New User
-POST {{baseUrl}}/Account/register
+POST {{Ujsag_HostAddress}}/Account/register
 Content-Type: application/json
 
 {
@@ -16,16 +16,16 @@ Content-Type: application/json
 
 ### Login as Admin
 # @name adminLogin
-POST {{baseUrl}}/Account/login
+POST {{Ujsag_HostAddress}}/Account/login
 Content-Type: application/json
 
 {
-  "email": "{{adminEmail}}",
-  "password": "{{adminPassword}}"
+  "email": "admin@newspaper.com",
+  "password": "Admin123!"
 }
 
 ### Login as Regular User
-POST {{baseUrl}}/Account/login
+POST {{Ujsag_HostAddress}}/Account/login
 Content-Type: application/json
 
 {
@@ -34,15 +34,15 @@ Content-Type: application/json
 }
 
 ### Get All Authors (Public)
-GET {{baseUrl}}/api/authors/listauthors
+GET {{Ujsag_HostAddress}}/api/authors/listauthors
 
 ### Get Author By ID (Public)
-GET {{baseUrl}}/api/authors/1
+GET {{Ujsag_HostAddress}}/api/authors/1
 
 ### Create Author (Admin Only)
-POST {{baseUrl}}/api/authors
+POST {{Ujsag_HostAddress}}/api/authors
 Content-Type: application/json
-Authorization: Bearer {{adminLogin.response.body.accessToken}}
+Authorization: Bearer {"CfDJ8O_8NKnprmJFnjL3O-HDaru1Jpgoz5rFMTQ951wnX6B4HHjfBvOQfMTV3ULBNf9keMcuVRfrwadyDMXyNwiIrw4kUuINxHJMKHcTZ9sqOS5z9Xd85W0HSN2710lukJMXa1g4h9k960CdaGPXi0uN_7ODPF79D14mAnoJQt9pKvRuObxFhR_kzyDoDPrt4sszlCDQmCP2qfImpdGhQWpHWBRot3ZRe9QfJz7-1Os0Q-UesLns9s8Q4znRG8xw6pDRuW5xo3AyCI4KP2461JORlkf7YpqN7eSBtllgOvuAsMtnUPn5YsB9ErLf-88oDYMOl-ies_KBjkOAN8EIDLul8Yu8nF5xGKNCSrRprNj9f8Gx0XiI0FyvUrLfn3U4m8X8ThL_rL1jUPcOjGjZHJxe7l0vglwU7JR3MFNMp7fQ5uXjKT_QqoEF7tQxCLrYNttc8tEhmo-Bb0VmFneq9_9RxWRaljMYUtomt95nsz2Yb0vahSFhgSRuKZ_49udv_dKnoj7AeVxkoJAFNwxTpL3Lr9IBXQIQjxTXnXqJggUId7VzfmJYtVxk2p-2b7WkHFtgr9YS_EHrmjlS87r8b8VnPXgh6hsV-FntnLY095GUZRF4M26FpI07lpX0gb4yFo6iQjlhk5YeXbqvis2t8fuXGuDBdCR6y9E7OW0Rb2FxtC1sbK8UshBOc36GJ4WNcs8WDEp4hJjmZgFugxQvh4mO81UZfRzb2oAi5o5FakNF9DHTEC9C6MZaA_HTIa4Axu9dNL4N6bvwBInfnXGdWG9Co47DHIlTueKRZKPB_wodk1Hj"}
 
 {
   "name": "John Doe",
@@ -52,7 +52,7 @@ Authorization: Bearer {{adminLogin.response.body.accessToken}}
 
 ### Create Another Author
 # @name createAuthor
-POST {{baseUrl}}/api/authors
+POST {{Ujsag_HostAddress}}/api/authors
 Content-Type: application/json
 Authorization: Bearer {{adminLogin.response.body.accessToken}}
 
@@ -63,53 +63,53 @@ Authorization: Bearer {{adminLogin.response.body.accessToken}}
 }
 
 ### Get All Articles (Public)
-GET {{baseUrl}}/api/articles
+GET {{Ujsag_HostAddress}}/api/articles
 
 ### Get Article By ID (Public)
-GET {{baseUrl}}/api/articles/1
+GET {{Ujsag_HostAddress}}/api/articles/1
 
 ### Create Article (Admin Only)
 # @name createArticle
-POST {{baseUrl}}/api/articles
+POST {{Ujsag_HostAddress}}/api/articles
 Content-Type: application/json
-Authorization: Bearer {{adminLogin.response.body.accessToken}}
+Authorization: Bearer CfDJ8O_8NKnprmJFnjL3O-HDaru1Jpgoz5rFMTQ951wnX6B4HHjfBvOQfMTV3ULBNf9keMcuVRfrwadyDMXyNwiIrw4kUuINxHJMKHcTZ9sqOS5z9Xd85W0HSN2710lukJMXa1g4h9k960CdaGPXi0uN_7ODPF79D14mAnoJQt9pKvRuObxFhR_kzyDoDPrt4sszlCDQmCP2qfImpdGhQWpHWBRot3ZRe9QfJz7-1Os0Q-UesLns9s8Q4znRG8xw6pDRuW5xo3AyCI4KP2461JORlkf7YpqN7eSBtllgOvuAsMtnUPn5YsB9ErLf-88oDYMOl-ies_KBjkOAN8EIDLul8Yu8nF5xGKNCSrRprNj9f8Gx0XiI0FyvUrLfn3U4m8X8ThL_rL1jUPcOjGjZHJxe7l0vglwU7JR3MFNMp7fQ5uXjKT_QqoEF7tQxCLrYNttc8tEhmo-Bb0VmFneq9_9RxWRaljMYUtomt95nsz2Yb0vahSFhgSRuKZ_49udv_dKnoj7AeVxkoJAFNwxTpL3Lr9IBXQIQjxTXnXqJggUId7VzfmJYtVxk2p-2b7WkHFtgr9YS_EHrmjlS87r8b8VnPXgh6hsV-FntnLY095GUZRF4M26FpI07lpX0gb4yFo6iQjlhk5YeXbqvis2t8fuXGuDBdCR6y9E7OW0Rb2FxtC1sbK8UshBOc36GJ4WNcs8WDEp4hJjmZgFugxQvh4mO81UZfRzb2oAi5o5FakNF9DHTEC9C6MZaA_HTIa4Axu9dNL4N6bvwBInfnXGdWG9Co47DHIlTueKRZKPB_wodk1Hj
 
 {
   "title": "Breaking News: Technology Advances",
-  "content": "In a groundbreaking development, scientists have made significant progress in artificial intelligence research. This breakthrough could revolutionize how we interact with technology in our daily lives.",
+  "description": "In a groundbreaking development, scientists have made significant progress in artificial intelligence research. This breakthrough could revolutionize how we interact with technology in our daily lives.",
   "publishedDate": "2024-11-26T10:00:00Z",
   "authorId": 1,
   "category": "Technology"
 }
 
 ### Create Another Article
-POST {{baseUrl}}/api/articles
+POST {{Ujsag_HostAddress}}/api/articles
 Content-Type: application/json
 Authorization: Bearer {{adminLogin.response.body.accessToken}}
 
 {
   "title": "Local Community Celebrates Annual Festival",
-  "content": "The annual community festival brought together thousands of residents this weekend. The event featured local musicians, food vendors, and activities for families.",
+  "description": "The annual community festival brought together thousands of residents this weekend. The event featured local musicians, food vendors, and activities for families.",
   "publishedDate": "2024-11-25T14:30:00Z",
   "authorId": 1,
   "category": "Local News"
 }
 
 ### Create Sports Article
-POST {{baseUrl}}/api/articles
+POST {{Ujsag_HostAddress}}/api/articles
 Content-Type: application/json
-Authorization: Bearer {{adminLogin.response.body.accessToken}}
+Authorization: Bearer "CfDJ8O_8NKnprmJFnjL3O-HDaru1Jpgoz5rFMTQ951wnX6B4HHjfBvOQfMTV3ULBNf9keMcuVRfrwadyDMXyNwiIrw4kUuINxHJMKHcTZ9sqOS5z9Xd85W0HSN2710lukJMXa1g4h9k960CdaGPXi0uN_7ODPF79D14mAnoJQt9pKvRuObxFhR_kzyDoDPrt4sszlCDQmCP2qfImpdGhQWpHWBRot3ZRe9QfJz7-1Os0Q-UesLns9s8Q4znRG8xw6pDRuW5xo3AyCI4KP2461JORlkf7YpqN7eSBtllgOvuAsMtnUPn5YsB9ErLf-88oDYMOl-ies_KBjkOAN8EIDLul8Yu8nF5xGKNCSrRprNj9f8Gx0XiI0FyvUrLfn3U4m8X8ThL_rL1jUPcOjGjZHJxe7l0vglwU7JR3MFNMp7fQ5uXjKT_QqoEF7tQxCLrYNttc8tEhmo-Bb0VmFneq9_9RxWRaljMYUtomt95nsz2Yb0vahSFhgSRuKZ_49udv_dKnoj7AeVxkoJAFNwxTpL3Lr9IBXQIQjxTXnXqJggUId7VzfmJYtVxk2p-2b7WkHFtgr9YS_EHrmjlS87r8b8VnPXgh6hsV-FntnLY095GUZRF4M26FpI07lpX0gb4yFo6iQjlhk5YeXbqvis2t8fuXGuDBdCR6y9E7OW0Rb2FxtC1sbK8UshBOc36GJ4WNcs8WDEp4hJjmZgFugxQvh4mO81UZfRzb2oAi5o5FakNF9DHTEC9C6MZaA_HTIa4Axu9dNL4N6bvwBInfnXGdWG9Co47DHIlTueKRZKPB_wodk1Hj",
 
 {
   "title": "Championship Finals: Thrilling Victory",
-  "content": "In an exciting match that went into overtime, the home team secured victory in the championship finals. Fans celebrated throughout the night as the team claimed their first title in a decade.",
+  "description": "In an exciting match that went into overtime, the home team secured victory in the championship finals. Fans celebrated throughout the night as the team claimed their first title in a decade.",
   "publishedDate": "2024-11-24T20:00:00Z",
   "authorId": 2,
-  "category": "Sports"
+ 
 }
 
 ### Update Article (Admin Only)
-PUT {{baseUrl}}/api/articles/1
+PUT {{Ujsag_HostAddress}}/api/articles/1
 Content-Type: application/json
 Authorization: Bearer {{adminLogin.response.body.accessToken}}
 
@@ -123,5 +123,5 @@ Authorization: Bearer {{adminLogin.response.body.accessToken}}
 }
 
 ### Delete Article (Admin Only)
-DELETE {{baseUrl}}/api/articles/3
+DELETE {{Ujsag_HostAddress}}/api/articles/3
 Authorization: Bearer {{adminLogin.response.body.accessToken}}
