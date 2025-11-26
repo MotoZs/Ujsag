@@ -18,13 +18,15 @@ const Fooldal = () => {
       <h1>Cikkek</h1>
       {szerzok.map((s) => (
         <div className="card">
-            <h2>{s.nev}</h2>
+            <h2>{s.name}</h2>
             <p>{s.id}</p>
-            {s.cikkek.map((c) => (
+            {s.article?.map((c) => (
                 <div>
-                    <h3>{c.cim}</h3>
+                    <h3>{c.title}</h3>
                     <p>{c.id}</p>
-                    <p>{c.leiras}</p>
+                    <p>{c.description}</p>
+                    <p>{c.createddate}</p>
+                    <p>{c.authorid}</p>
                 </div>
             ))}
         </div>
