@@ -315,7 +315,12 @@ public partial class MainPage : ContentPage
                 var httpClient = httpClientFactory.CreateClient();
                 await httpClient.DeleteAsync($"{BACKEND_URL}/articles/{article.Id}");
             }
-            catch { }
+            catch (Exception er)
+            {
+
+                throw;
+            }
+                
         }
     }
 
