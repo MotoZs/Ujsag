@@ -4,20 +4,11 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Client"
-    Shell.FlyoutBehavior="Flyout">
+    Title="Newspaper Admin">
 
-    <TabBar>
-        <ShellContent
-            Title="Home"
-            ContentTemplate="{DataTemplate local:MainPage}"
-            Route="MainPage"
-            Icon="home.png" />
-
-        <ShellContent
-            Title="Authors"
-            ContentTemplate="{DataTemplate local:AuthorsPage}"
-            Route="AuthorsPage"
-            Icon="person.png" />
-    </TabBar>
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />
 
 </Shell>
