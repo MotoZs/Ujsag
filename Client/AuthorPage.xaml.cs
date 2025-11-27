@@ -15,7 +15,7 @@ public partial class AuthorsPage : ContentPage
         InitializeComponent();
         _httpClient = new HttpClient
         {
-            BaseAddress = new Uri("https://localhost:7072/api") // Update with your API URL
+            BaseAddress = new Uri("https://localhost:7072") // Update with your API URL
         };
         _authors = new ObservableCollection<AuthorDto>();
         AuthorsCollectionView.ItemsSource = _authors;
@@ -32,12 +32,10 @@ public partial class AuthorsPage : ContentPage
     {
         try
         {
-            // Get the stored auth token
             var token = await SecureStorage.GetAsync("auth_token");
 
             if (!string.IsNullOrEmpty(token))
             {
-                // Set the authorization header for all requests
                 _httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
             }
@@ -59,38 +57,25 @@ public partial class AuthorsPage : ContentPage
             LoadingIndicator.IsVisible = true;
             LoadingIndicator.IsRunning = true;
 
-            var response = await _httpClient.GetAsync("api/authors");
-
-            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-            {
-                ShowMessage("Session expired. Please log in again.", true);
-                LoadingIndicator.IsRunning = false;
-                LoadingIndicator.IsVisible = false;
-                return;
-            }
-
+            var response = await _httpClient.GetAsync("authors");
             response.EnsureSuccessStatusCode();
+
             var authors = await response.Content.ReadFromJsonAsync<List<AuthorDto>>();
 
             _authors.Clear();
             if (authors != null)
             {
-                foreach (var author in authors)
-                {
-                    _authors.Add(author);
-                }
+                foreach (var a in authors)
+                    _authors.Add(a);
             }
-
-            LoadingIndicator.IsRunning = false;
-            LoadingIndicator.IsVisible = false;
         }
-        catch (Exception ex)
+        finally
         {
             LoadingIndicator.IsRunning = false;
             LoadingIndicator.IsVisible = false;
-            ShowMessage($"Error loading authors: {ex.Message}", true);
         }
     }
+
 
     private async void OnAddAuthorClicked(object sender, EventArgs e)
     {

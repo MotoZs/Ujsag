@@ -1,11 +1,13 @@
 ﻿using Common;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace Client;
 
 public partial class DetailsPage : ContentPage, IQueryAttributable
 {
-    public string BACKEND_URL = "https://localhost:7072/api";
+    private readonly HttpClient _httpClient;
+    public string BACKEND_URL = "https://localhost:7072";
     private readonly IHttpClientFactory httpClientFactory;
     private ArticleDto article;
     private int id;
@@ -24,10 +26,31 @@ public partial class DetailsPage : ContentPage, IQueryAttributable
 
     protected override async void OnAppearing()
     {
+
+        await LoadTokenAsync(_httpClient);
+
         base.OnAppearing();
 
         await LoadDataAsync();
     }
+
+    private async Task LoadTokenAsync(HttpClient client)
+    {
+        try
+        {
+            string? token = await SecureStorage.GetAsync("auth_token");
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
+        }
+        catch
+        {
+            await DisplayAlert("Error", "Token load failed.", "OK");
+        }
+    }
+
 
     private async ValueTask LoadDataAsync()
     {

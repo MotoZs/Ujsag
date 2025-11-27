@@ -16,6 +16,8 @@ public partial class MainPage : ContentPage
 {
     public string BACKEND_URL = "https://localhost:7072";
 
+    private readonly HttpClient _httpClient;
+
     private readonly IHttpClientFactory httpClientFactory;
     private ObservableCollection<ArticleDto> articleCollection = new ObservableCollection<ArticleDto>();
     private ObservableCollection<ArticleDto> publicArticleCollection = new ObservableCollection<ArticleDto>();
@@ -40,8 +42,21 @@ public partial class MainPage : ContentPage
         PublicArticlesView.ItemsSource = publicArticleCollection;
     }
 
+    private async Task SetAuthAsync(HttpClient client)
+    {
+        var token = await SecureStorage.GetAsync("auth_token");
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+        }
+    }
+
+
     protected override async void OnAppearing()
     {
+        await SetAuthAsync(_httpClient);
+
         base.OnAppearing();
 
         // Check if already logged in
