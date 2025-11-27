@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Net.Http.Headers;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -11,10 +12,9 @@ using Microsoft.Maui.Storage;
 
 namespace Client;
 
-
 public partial class MainPage : ContentPage
 {
-    public string BACKEND_URL = "https://localhost:7072/api";
+    public string BACKEND_URL = "https://localhost:7072";
 
     private readonly IHttpClientFactory httpClientFactory;
     private ObservableCollection<ArticleDto> articleCollection = new ObservableCollection<ArticleDto>();
@@ -44,12 +44,29 @@ public partial class MainPage : ContentPage
     {
         base.OnAppearing();
 
+        // Check if already logged in
+        var token = await SecureStorage.GetAsync("auth_token");
+        if (!string.IsNullOrEmpty(token))
+        {
+            AdminPanel.IsVisible = true;
+            LoginPanel.IsVisible = false;
+        }
+
         await LoadDataAsync();
     }
 
     private async Task LoadDataAsync()
     {
         var httpClient = httpClientFactory.CreateClient();
+
+        // Set auth token if available
+        var token = await SecureStorage.GetAsync("auth_token");
+        if (!string.IsNullOrEmpty(token))
+        {
+            httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+        }
+
         List<ArticleDto>? articles = null;
 
         try
@@ -146,22 +163,96 @@ public partial class MainPage : ContentPage
 
     private async void OnLoginClickedAsync(object? sender, EventArgs e)
     {
-        if (UsernameEntry.Text == "admin" && PasswordEntry.Text == "password")
+        var username = UsernameEntry.Text;
+        var password = PasswordEntry.Text;
+
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
         {
-            AdminPanel.IsVisible = true;
-            LoginPanel.IsVisible = false;
-            MessageLabel.Text = string.Empty;
+            MessageLabel.Text = "Please enter username and password";
+            return;
         }
-        else
+
+        try
         {
-            MessageLabel.Text = "Invalid credentials";
+            var httpClient = httpClientFactory.CreateClient();
+            var loginRequest = new { Email = username, Password = password };
+
+            // Identity uses /login endpoint
+            var response = await httpClient.PostAsJsonAsync($"{BACKEND_URL}/Account/login", loginRequest);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
+                if (result != null && !string.IsNullOrEmpty(result.AccessToken))
+                {
+                    // Save token to secure storage
+                    await SecureStorage.SetAsync("auth_token", result.AccessToken);
+
+                    // Get user info to determine role
+                    httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", result.AccessToken);
+
+                    try
+                    {
+                        var userInfoResponse = await httpClient.GetAsync($"{BACKEND_URL}/manage/info");
+                        if (userInfoResponse.IsSuccessStatusCode)
+                        {
+                            var userInfo = await userInfoResponse.Content.ReadFromJsonAsync<UserInfo>();
+                            if (userInfo != null)
+                            {
+                                // Check if user has admin role
+                                var isAdmin = userInfo.Roles?.Contains("Admin") ?? false;
+                                await SecureStorage.SetAsync("user_role", isAdmin ? "Admin" : "User");
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // Default to checking via claims or assume user role
+                        await SecureStorage.SetAsync("user_role", "User");
+                    }
+
+                    // Show admin panel
+                    AdminPanel.IsVisible = true;
+                    LoginPanel.IsVisible = false;
+                    MessageLabel.Text = string.Empty;
+
+                    // Clear password
+                    PasswordEntry.Text = string.Empty;
+
+                    // Reload data with authenticated token
+                    await LoadDataAsync();
+                }
+                else
+                {
+                    MessageLabel.Text = "Login failed";
+                }
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                MessageLabel.Text = "Invalid credentials";
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageLabel.Text = $"Login error: {ex.Message}";
         }
     }
 
-    private void OnLogoutClickedAsync(object? sender, EventArgs e)
+    private async void OnLogoutClickedAsync(object? sender, EventArgs e)
     {
+        // Clear stored auth data
+        SecureStorage.Remove("auth_token");
+        SecureStorage.Remove("user_role");
+
         AdminPanel.IsVisible = false;
         LoginPanel.IsVisible = true;
+
+        // Clear sensitive fields
+        UsernameEntry.Text = string.Empty;
+        PasswordEntry.Text = string.Empty;
     }
 
     private void OnAddNewClickedAsync(object? sender, EventArgs e)
@@ -216,10 +307,16 @@ public partial class MainPage : ContentPage
 
             await SaveLocalArticlesAsync();
 
-            // try to POST to backend (best effort)
+            // try to POST to backend (best effort) with auth token
             try
             {
                 var httpClient = httpClientFactory.CreateClient();
+                var token = await SecureStorage.GetAsync("auth_token");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
+                }
                 await httpClient.PostAsJsonAsync($"{BACKEND_URL}/articles", newArticle);
             }
             catch
@@ -277,12 +374,18 @@ public partial class MainPage : ContentPage
                     }
                 }
 
-                // try to PUT to backend
+                // try to PUT to backend with auth token
                 if (updated.Id > 0)
                 {
                     try
                     {
                         var httpClient = httpClientFactory.CreateClient();
+                        var token = await SecureStorage.GetAsync("auth_token");
+                        if (!string.IsNullOrEmpty(token))
+                        {
+                            httpClient.DefaultRequestHeaders.Authorization =
+                                new AuthenticationHeaderValue("Bearer", token);
+                        }
                         await httpClient.PutAsJsonAsync($"{BACKEND_URL}/articles/{updated.Id}", updated);
                     }
                     catch { }
@@ -313,14 +416,18 @@ public partial class MainPage : ContentPage
             try
             {
                 var httpClient = httpClientFactory.CreateClient();
+                var token = await SecureStorage.GetAsync("auth_token");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
+                }
                 await httpClient.DeleteAsync($"{BACKEND_URL}/articles/{article.Id}");
             }
             catch (Exception er)
             {
-
                 throw;
             }
-                
         }
     }
 
@@ -337,4 +444,19 @@ public partial class MainPage : ContentPage
 
         ArticleEditorPanel.IsVisible = true;
     }
+}
+
+public class LoginResponse
+{
+    public string AccessToken { get; set; } = string.Empty;
+    public string TokenType { get; set; } = string.Empty;
+    public int ExpiresIn { get; set; }
+    public string RefreshToken { get; set; } = string.Empty;
+}
+
+public class UserInfo
+{
+    public string Email { get; set; } = string.Empty;
+    public bool IsEmailConfirmed { get; set; }
+    public List<string>? Roles { get; set; }
 }
