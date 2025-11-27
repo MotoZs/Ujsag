@@ -16,7 +16,7 @@ const Fooldal = () => {
       .catch(() => toast.error("A szerzők belöltése sikertelen!"));
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     apiClient
       .get("/articles")
       .then((response) => setCikkek(response.data))
@@ -28,14 +28,22 @@ const Fooldal = () => {
       <h1>Cikkek</h1>
       {szerzok.map((s) => (
         <div className="card">
-            <span className="cim">{s.name}</span> --- <span>{s.id}</span>
-            <hr />
-            {cikkek.map((c) => (
-              <div>
-                {c.authorId == s.id && <span>{c.title} - {c.id}</span>}
-              </div>
-            ))}
-            
+          <span className="cim">{s.name}</span> --- <span>{s.id}</span>
+          <hr />
+          {cikkek.map((c) => (
+            <div className="cikk_cim">
+              {c.authorId == s.id && (
+                <div>
+                  <span>
+                    {c.title} - {c.id}
+                  </span>
+                  <p className="cikk_leiras">{c.description}</p>
+                  <hr />
+                </div>
+              )}
+              
+            </div>
+          ))}
         </div>
       ))}
     </>

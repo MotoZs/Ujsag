@@ -85,3 +85,10 @@ button:focus-visible {
 .cim{
   font-size: 200%;
 }
+
+@media (max-width: 768px) {
+  .card {
+    width: 88%;
+    padding: 15px;
+  }
+}
