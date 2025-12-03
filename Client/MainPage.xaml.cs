@@ -18,9 +18,9 @@ public partial class MainPage : ContentPage
 
     private readonly HttpClient _httpClient;
 
-    private readonly IHttpClientFactory httpClientFactory;
     private ObservableCollection<ArticleDto> articleCollection = new ObservableCollection<ArticleDto>();
     private ObservableCollection<ArticleDto> publicArticleCollection = new ObservableCollection<ArticleDto>();
+    private ObservableCollection<AuthorDto> _authors = new();
 
     // local id generation for client-only articles
     private int _nextLocalId = -1;
@@ -32,7 +32,9 @@ public partial class MainPage : ContentPage
 
     public MainPage(IHttpClientFactory httpClientFactory)
     {
-        this.httpClientFactory = httpClientFactory;
+        _httpClient = httpClientFactory.CreateClient();
+
+        SecureStorage.Remove("auth_token");
 
         _localFileName = Path.Combine(FileSystem.AppDataDirectory, "local_articles.json");
 
@@ -40,14 +42,16 @@ public partial class MainPage : ContentPage
 
         ArticlesView.ItemsSource = articleCollection;
         PublicArticlesView.ItemsSource = publicArticleCollection;
+
+
     }
 
-    private async Task SetAuthAsync(HttpClient client)
+    private async Task SetAuthAsync()
     {
         var token = await SecureStorage.GetAsync("auth_token");
         if (!string.IsNullOrWhiteSpace(token))
         {
-            client.DefaultRequestHeaders.Authorization =
+            _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token);
         }
     }
@@ -55,7 +59,7 @@ public partial class MainPage : ContentPage
 
     protected override async void OnAppearing()
     {
-        await SetAuthAsync(_httpClient);
+        await SetAuthAsync();
 
         base.OnAppearing();
 
@@ -72,13 +76,13 @@ public partial class MainPage : ContentPage
 
     private async Task LoadDataAsync()
     {
-        var httpClient = httpClientFactory.CreateClient();
+ 
 
         // Set auth token if available
         var token = await SecureStorage.GetAsync("auth_token");
         if (!string.IsNullOrEmpty(token))
         {
-            httpClient.DefaultRequestHeaders.Authorization =
+            _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token);
         }
 
@@ -86,7 +90,7 @@ public partial class MainPage : ContentPage
 
         try
         {
-            articles = await httpClient.GetFromJsonAsync<List<ArticleDto>>($"{BACKEND_URL}/articles");
+            articles = await _httpClient.GetFromJsonAsync<List<ArticleDto>>($"{BACKEND_URL}/articles");
         }
         catch
         {
@@ -189,11 +193,10 @@ public partial class MainPage : ContentPage
 
         try
         {
-            var httpClient = httpClientFactory.CreateClient();
             var loginRequest = new { Email = username, Password = password };
 
             // Identity uses /login endpoint
-            var response = await httpClient.PostAsJsonAsync($"{BACKEND_URL}/Account/login", loginRequest);
+            var response = await _httpClient.PostAsJsonAsync($"{BACKEND_URL}/Account/login", loginRequest);
 
             if (response.IsSuccessStatusCode)
             {
@@ -205,12 +208,12 @@ public partial class MainPage : ContentPage
                     await SecureStorage.SetAsync("auth_token", result.AccessToken);
 
                     // Get user info to determine role
-                    httpClient.DefaultRequestHeaders.Authorization =
+                    _httpClient.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue("Bearer", result.AccessToken);
 
                     try
                     {
-                        var userInfoResponse = await httpClient.GetAsync($"{BACKEND_URL}/manage/info");
+                        var userInfoResponse = await _httpClient.GetAsync($"{BACKEND_URL}/manage/info");
                         if (userInfoResponse.IsSuccessStatusCode)
                         {
                             var userInfo = await userInfoResponse.Content.ReadFromJsonAsync<UserInfo>();
@@ -325,14 +328,13 @@ public partial class MainPage : ContentPage
             // try to POST to backend (best effort) with auth token
             try
             {
-                var httpClient = httpClientFactory.CreateClient();
                 var token = await SecureStorage.GetAsync("auth_token");
                 if (!string.IsNullOrEmpty(token))
                 {
-                    httpClient.DefaultRequestHeaders.Authorization =
+                    _httpClient.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue("Bearer", token);
                 }
-                await httpClient.PostAsJsonAsync($"{BACKEND_URL}/articles", newArticle);
+                await _httpClient.PostAsJsonAsync($"{BACKEND_URL}/articles", newArticle);
             }
             catch
             {
@@ -394,14 +396,13 @@ public partial class MainPage : ContentPage
                 {
                     try
                     {
-                        var httpClient = httpClientFactory.CreateClient();
                         var token = await SecureStorage.GetAsync("auth_token");
                         if (!string.IsNullOrEmpty(token))
                         {
-                            httpClient.DefaultRequestHeaders.Authorization =
+                            _httpClient.DefaultRequestHeaders.Authorization =
                                 new AuthenticationHeaderValue("Bearer", token);
                         }
-                        await httpClient.PutAsJsonAsync($"{BACKEND_URL}/articles/{updated.Id}", updated);
+                        await _httpClient.PutAsJsonAsync($"{BACKEND_URL}/articles/{updated.Id}", updated);
                     }
                     catch { }
                 }
@@ -430,14 +431,14 @@ public partial class MainPage : ContentPage
         {
             try
             {
-                var httpClient = httpClientFactory.CreateClient();
+
                 var token = await SecureStorage.GetAsync("auth_token");
                 if (!string.IsNullOrEmpty(token))
                 {
-                    httpClient.DefaultRequestHeaders.Authorization =
+                    _httpClient.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue("Bearer", token);
                 }
-                await httpClient.DeleteAsync($"{BACKEND_URL}/articles/{article.Id}");
+                await _httpClient.DeleteAsync($"{BACKEND_URL}/articles/{article.Id}");
             }
             catch (Exception er)
             {

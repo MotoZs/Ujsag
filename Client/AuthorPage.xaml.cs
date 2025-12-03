@@ -57,7 +57,7 @@ public partial class AuthorsPage : ContentPage
             LoadingIndicator.IsVisible = true;
             LoadingIndicator.IsRunning = true;
 
-            var response = await _httpClient.GetAsync("authors");
+            var response = await _httpClient.GetAsync("/api/authors/listauthors");
             response.EnsureSuccessStatusCode();
 
             var authors = await response.Content.ReadFromJsonAsync<List<AuthorDto>>();
